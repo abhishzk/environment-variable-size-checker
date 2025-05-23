@@ -1,10 +1,12 @@
+
 "use client";
 
 import { useState, useEffect, ChangeEvent } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { AlertCircle, CheckCircle2, Lightbulb, Copy } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { AlertCircle, CheckCircle2, Lightbulb, Copy, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/hooks/use-toast";
 
@@ -22,6 +24,59 @@ const optimizationTips = [
   "For structured data, ensure you are using an efficient serialization format (e.g., plain JSON is usually fine, but avoid overly verbose XML if it's a choice).",
   "Regularly audit your environment variables for unused or outdated entries."
 ];
+
+const workarounds = [
+  {
+    id: "secret-manager",
+    title: "Using a Secret Manager (e.g., Google Secret Manager, AWS Secrets Manager)",
+    content: [
+      { type: "paragraph", text: "Store large secrets (API keys, database credentials, certificates) in a dedicated secret management service. Your application then fetches these secrets at runtime using a reference stored in the environment variable. This keeps your environment variables small and enhances security." },
+      { type: "code", language: "plaintext", code: `// Environment Variable (.env) Example
+
+// Before:
+// HUGE_API_KEY="verylongandcomplexapikeyvalue..."
+// LARGE_CERT_CONTENT="-----BEGIN CERTIFICATE-----\\nMIIDdDCCAlyg..."
+
+// After (Example for Google Secret Manager):
+// API_KEY_SECRET_REF="projects/your-gcp-project/secrets/api-key-name/versions/latest"
+// CERT_SECRET_REF="projects/your-gcp-project/secrets/certificate-name/versions/latest"` },
+      { type: "paragraph", text: "Note: Your application code will then use the cloud provider's SDK to retrieve the actual secret value using this reference." }
+    ]
+  },
+  {
+    id: "splitting-variables",
+    title: "Splitting Large Variables",
+    content: [
+      { type: "paragraph", text: "If a single environment variable contains a very large string, such as a JSON configuration, consider splitting it into multiple smaller variables. Your application will then need to reassemble these parts." },
+      { type: "code", language: "plaintext", code: `// Environment Variable (.env) Example
+
+// Before:
+// LARGE_JSON_CONFIG='{"featureA": {"enabled": true, "value": "..." }, "featureB": {"enabled": false, "value": "..."}}' // (Imagine this is > 4KB)
+
+// After:
+// LARGE_JSON_CONFIG_PART_1='{"featureA": {"enabled": true, "value": "..." },'
+// LARGE_JSON_CONFIG_PART_2='"featureB": {"enabled": false, "value": "..."}}'` },
+      { type: "paragraph", text: "Note: In your application, you'd concatenate these string parts and then parse the JSON. This method can be cumbersome and is generally less ideal than using a secret manager for structured data." }
+    ]
+  },
+  {
+    id: "referencing-files",
+    title: "Referencing Files for Large Content",
+    content: [
+      { type: "paragraph", text: "For content like private keys, service account JSON files, or lengthy configuration files, store them as files within your application's deployment package or a mounted volume (if your platform supports it). Then, use an environment variable to store the *path* to this file." },
+      { type: "code", language: "plaintext", code: `// Environment Variable (.env) Example
+
+// Before:
+// SERVICE_ACCOUNT_JSON_CONTENT='{ "type": "service_account", "project_id": "...", ... }'
+
+// After:
+// SERVICE_ACCOUNT_FILE_PATH="/app/secrets/service-account.json"
+// PRIVATE_KEY_FILE_PATH="/etc/ssl/private/my-app.key"` },
+      { type: "paragraph", text: "Note: Your application will then read the file content from the specified path. Ensure file permissions and security are correctly handled." }
+    ]
+  }
+];
+
 
 export default function EnvSizeCheckPage() {
   const [envVars, setEnvVars] = useState('');
@@ -137,7 +192,7 @@ export default function EnvSizeCheckPage() {
         </CardContent>
       </Card>
 
-      <Card className="w-full shadow-lg rounded-xl">
+      <Card className="w-full shadow-lg rounded-xl mb-10">
         <CardHeader>
           <div className="flex items-center">
             <Lightbulb className="h-7 w-7 mr-3 text-accent" />
@@ -156,6 +211,44 @@ export default function EnvSizeCheckPage() {
               </li>
             ))}
           </ul>
+        </CardContent>
+      </Card>
+
+      <Card className="w-full shadow-lg rounded-xl">
+        <CardHeader>
+          <div className="flex items-center">
+            <Layers className="h-7 w-7 mr-3 text-primary" />
+            <CardTitle className="text-2xl font-semibold">Detailed Workarounds & How-Tos</CardTitle>
+          </div>
+          <CardDescription>
+            Explore detailed methods for handling environment variables that exceed size limits.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Accordion type="single" collapsible className="w-full">
+            {workarounds.map((workaround) => (
+              <AccordionItem value={workaround.id} key={workaround.id}>
+                <AccordionTrigger className="text-base hover:no-underline">
+                  {workaround.title}
+                </AccordionTrigger>
+                <AccordionContent className="space-y-3 text-sm">
+                  {workaround.content.map((item, index) => {
+                    if (item.type === "paragraph") {
+                      return <p key={index} className="text-muted-foreground">{item.text}</p>;
+                    }
+                    if (item.type === "code") {
+                      return (
+                        <pre key={index} className="p-3 mt-1 bg-muted/30 dark:bg-muted/50 rounded-md overflow-x-auto text-xs border border-muted/50">
+                          <code className="font-mono">{item.code}</code>
+                        </pre>
+                      );
+                    }
+                    return null;
+                  })}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </CardContent>
       </Card>
 
