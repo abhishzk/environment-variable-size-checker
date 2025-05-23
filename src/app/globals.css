@@ -2,79 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --background: 210 29% 96%; /* Light Gray #F0F4F8 */
+    --foreground: 210 10% 23%; /* Dark Gray for text on light gray */
+
+    --card: 0 0% 100%; /* White cards */
+    --card-foreground: 210 10% 23%; /* Dark Gray for text on cards */
+
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --popover-foreground: 210 10% 23%;
+
+    --primary: 207 88% 70%; /* Soft Blue #64B5F6 */
+    --primary-foreground: 210 40% 9.8%; /* Dark Blue for text on primary */
+
+    --secondary: 210 25% 90%; /* Lighter gray for secondary elements */
+    --secondary-foreground: 210 10% 23%; /* Dark Gray for text on secondary */
+
+    --muted: 210 25% 88%; /* Muted background */
+    --muted-foreground: 210 10% 45%; /* Muted text */
+
+    --accent: 34 100% 65%; /* Orange #FFB74D */
+    --accent-foreground: 24 95% 15%; /* Dark Brown for text on accent */
+    
+    --destructive: 34 100% 65%; /* Orange #FFB74D for destructive/warning state */
+    --destructive-foreground: 24 95% 15%; /* Dark Brown for text on destructive */
+    
+    --border: 210 20% 85%;
+    --input: 0 0% 100%; /* White input background */
+    --ring: 207 88% 60%; /* Ring color related to primary */
+
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    /* Sidebar variables - retaining defaults or adapting slightly if needed */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-primary: 207 88% 70%; /* Align with main primary */
+    --sidebar-primary-foreground: 210 40% 9.8%; /* Align with main primary-foreground */
+    --sidebar-accent: 210 25% 94%; 
+    --sidebar-accent-foreground: 210 10% 23%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 207 88% 60%; /* Align with main ring */
   }
+
   .dark {
+    /* Keeping dark mode mostly default, can be adjusted if dark mode is a specific requirement */
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
+    --primary: 207 88% 70%; /* Soft Blue #64B5F6 */
+    --primary-foreground: 210 40% 9.8%; /* Dark Blue for text on primary */
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --accent: 34 100% 65%; /* Orange #FFB74D */
+    --accent-foreground: 24 95% 15%; /* Dark Brown for text on accent */
+    --destructive: 34 100% 55%; /* Slightly darker orange for dark mode */
+    --destructive-foreground: 0 0% 98%; /* White text on orange for dark mode */
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
+    --ring: 207 88% 60%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 207 88% 70%;
+    --sidebar-primary-foreground: 210 40% 9.8%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 207 88% 60%;
   }
 }
 
@@ -84,5 +94,6 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    /* font-family removed to rely on Geist font variables set in layout.tsx */
   }
 }
