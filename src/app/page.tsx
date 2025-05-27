@@ -9,6 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { AlertCircle, CheckCircle2, Lightbulb, Copy, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/hooks/use-toast";
+import Link from 'next/link'; // Added Link import
 
 const KB_LIMIT = 4;
 const BYTE_LIMIT = KB_LIMIT * 1024;
@@ -25,7 +26,22 @@ const optimizationTips = [
   "Regularly audit your environment variables for unused or outdated entries."
 ];
 
-const workarounds = [
+// Define a more specific type for workaround content items
+interface WorkaroundContentItem {
+  type: "paragraph" | "code" | "link";
+  text?: string;
+  language?: string;
+  code?: string;
+  href?: string;
+}
+
+interface Workaround {
+  id: string;
+  title: string;
+  content: WorkaroundContentItem[];
+}
+
+const workarounds: Workaround[] = [
   {
     id: "secret-manager",
     title: "Using a Secret Manager (e.g., Google Secret Manager, AWS Secrets Manager)",
@@ -56,7 +72,8 @@ const workarounds = [
 // After:
 // LARGE_JSON_CONFIG_PART_1='{"featureA": {"enabled": true, "value": "..." },'
 // LARGE_JSON_CONFIG_PART_2='"featureB": {"enabled": false, "value": "..."}}'` },
-      { type: "paragraph", text: "Note: In your application, you'd concatenate these string parts and then parse the JSON. This method can be cumbersome and is generally less ideal than using a secret manager for structured data." }
+      { type: "paragraph", text: "Note: In your application, you'd concatenate these string parts and then parse the JSON. This method can be cumbersome and is generally less ideal than using a secret manager for structured data." },
+      { type: "link", text: "Need help splitting? Use our Split Key Tool.", href: "/split-key" }
     ]
   },
   {
@@ -244,14 +261,23 @@ export default function EnvSizeCheckPage() {
                 </AccordionTrigger>
                 <AccordionContent className="space-y-3 text-sm">
                   {workaround.content.map((item, index) => {
-                    if (item.type === "paragraph") {
+                    if (item.type === "paragraph" && item.text) {
                       return <p key={index} className="text-muted-foreground">{item.text}</p>;
                     }
-                    if (item.type === "code") {
+                    if (item.type === "code" && item.code) {
                       return (
                         <pre key={index} className="p-3 mt-1 bg-muted/30 dark:bg-muted/50 rounded-md overflow-x-auto text-xs border border-muted/50">
                           <code className="font-mono">{item.code}</code>
                         </pre>
+                      );
+                    }
+                    if (item.type === "link" && item.href && item.text) {
+                      return (
+                        <p key={index} className="mt-2">
+                          <Link href={item.href} className="text-primary hover:underline font-medium">
+                            {item.text}
+                          </Link>
+                        </p>
                       );
                     }
                     return null;
