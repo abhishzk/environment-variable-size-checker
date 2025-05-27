@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { AlertCircle, CheckCircle2, Lightbulb, Copy, Layers } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Lightbulb, Copy, Layers, ExternalLink, Scissors } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
@@ -72,8 +72,7 @@ const workarounds: Workaround[] = [
 // After:
 // LARGE_JSON_CONFIG_PART_1='{"featureA": {"enabled": true, "value": "..." },'
 // LARGE_JSON_CONFIG_PART_2='"featureB": {"enabled": false, "value": "..."}}'` },
-      { type: "paragraph", text: "Note: In your application, you'd concatenate these string parts and then parse the JSON. This method can be cumbersome and is generally less ideal than using a secret manager for structured data." },
-      { type: "link", text: "Need help splitting? Use our SplitText Tool.", href: "/split-key" }
+      { type: "paragraph", text: "Note: In your application, you'd concatenate these string parts and then parse the JSON. This method can be cumbersome and is generally less ideal than using a secret manager for structured data." }
     ]
   },
   {
@@ -222,27 +221,27 @@ export default function EnvSizeCheckPage() {
 
       <Card className="w-full shadow-lg rounded-xl mb-10">
         <CardHeader>
-          <div className="flex items-center">
-            <Lightbulb className="h-7 w-7 mr-3 text-accent" />
-            <CardTitle className="text-2xl font-semibold">Optimization Tips</CardTitle>
-          </div>
-          <CardDescription>
-            Practical suggestions to help you reduce the size of your environment variables.
-          </CardDescription>
+            <div className="flex items-center">
+                <Scissors className="h-7 w-7 mr-3 text-primary" />
+                <CardTitle className="text-2xl font-semibold">Split Large Text</CardTitle>
+            </div>
+            <CardDescription>
+                If your environment variables are too large, especially with long keys or certificates, use our tool to split them into manageable parts.
+            </CardDescription>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-3">
-            {optimizationTips.map((tip, index) => (
-              <li key={index} className="flex items-start text-sm">
-                <span className="text-accent mr-2 shrink-0">&bull;</span>
-                <span className="text-muted-foreground">{tip}</span>
-              </li>
-            ))}
-          </ul>
+            <p className="text-muted-foreground mb-4">
+                Our SplitText Tool helps you divide large text (like private keys or lengthy JSON strings) into smaller segments. This is useful when you hit platform limits on environment variable sizes.
+            </p>
+            <Button asChild>
+                <Link href="/split-key" className="inline-flex items-center">
+                    Go to SplitText Tool <ExternalLink className="ml-2 h-4 w-4" />
+                </Link>
+            </Button>
         </CardContent>
       </Card>
 
-      <Card className="w-full shadow-lg rounded-xl">
+      <Card className="w-full shadow-lg rounded-xl mb-10">
         <CardHeader>
           <div className="flex items-center">
             <Layers className="h-7 w-7 mr-3 text-primary" />
@@ -271,21 +270,35 @@ export default function EnvSizeCheckPage() {
                         </pre>
                       );
                     }
-                    if (item.type === "link" && item.href && item.text) {
-                      return (
-                        <p key={index} className="mt-2">
-                          <Link href={item.href} className="text-primary hover:underline font-medium">
-                            {item.text}
-                          </Link>
-                        </p>
-                      );
-                    }
+                    // Link type is no longer rendered here
                     return null;
                   })}
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
+        </CardContent>
+      </Card>
+      
+      <Card className="w-full shadow-lg rounded-xl mb-10">
+        <CardHeader>
+          <div className="flex items-center">
+            <Lightbulb className="h-7 w-7 mr-3 text-accent" />
+            <CardTitle className="text-2xl font-semibold">Optimization Tips</CardTitle>
+          </div>
+          <CardDescription>
+            Practical suggestions to help you reduce the size of your environment variables.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-3">
+            {optimizationTips.map((tip, index) => (
+              <li key={index} className="flex items-start text-sm">
+                <span className="text-accent mr-2 shrink-0">&bull;</span>
+                <span className="text-muted-foreground">{tip}</span>
+              </li>
+            ))}
+          </ul>
         </CardContent>
       </Card>
 
@@ -296,5 +309,6 @@ export default function EnvSizeCheckPage() {
     </main>
   );
 }
+    
 
     
