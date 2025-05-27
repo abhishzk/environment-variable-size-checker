@@ -81,11 +81,13 @@ const workarounds = [
 export default function EnvSizeCheckPage() {
   const [envVars, setEnvVars] = useState('');
   const [byteSize, setByteSize] = useState(0);
+  const [charCount, setCharCount] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
     const size = new TextEncoder().encode(envVars).length;
     setByteSize(size);
+    setCharCount(envVars.length);
   }, [envVars]);
 
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -97,6 +99,7 @@ export default function EnvSizeCheckPage() {
 
   const formattedByteSize = byteSize.toLocaleString();
   const formattedKbSize = (byteSize / 1024).toFixed(2);
+  const formattedCharCount = charCount.toLocaleString();
 
   const copyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text)
@@ -151,7 +154,7 @@ export default function EnvSizeCheckPage() {
           <CardTitle className="text-2xl font-semibold">Size Analysis</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center p-4 border rounded-lg bg-card shadow-sm">
+          <div className="flex flex-col sm:flex-row justify-between items-start p-4 border rounded-lg bg-card shadow-sm">
             <div>
               <p className="text-sm text-muted-foreground">Current Size</p>
               <p className={`text-3xl font-bold ${isOverLimit ? 'text-destructive' : 'text-primary'}`}>
@@ -160,10 +163,18 @@ export default function EnvSizeCheckPage() {
               <p className="text-sm text-muted-foreground">
                 ({formattedKbSize} KB / {KB_LIMIT} KB Limit)
               </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Characters: {formattedCharCount}
+              </p>
             </div>
-            <Button variant="outline" size="sm" onClick={() => copyToClipboard(byteSize.toString(), "Byte size")} className="mt-2 sm:mt-0">
-              <Copy className="mr-2 h-4 w-4" /> Copy Size
-            </Button>
+            <div className="flex flex-col space-y-2 mt-2 sm:mt-0 sm:items-end">
+              <Button variant="outline" size="sm" onClick={() => copyToClipboard(byteSize.toString(), "Byte size")}>
+                <Copy className="mr-2 h-4 w-4" /> Copy Byte Size
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => copyToClipboard(charCount.toString(), "Character count")}>
+                <Copy className="mr-2 h-4 w-4" /> Copy Char Count
+              </Button>
+            </div>
           </div>
           
           <Progress 
