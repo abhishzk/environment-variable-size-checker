@@ -9,7 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { AlertCircle, CheckCircle2, Lightbulb, Copy, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/hooks/use-toast";
-import Link from 'next/link'; // Added Link import
+import Link from 'next/link';
 
 const KB_LIMIT = 4;
 const BYTE_LIMIT = KB_LIMIT * 1024;
@@ -73,7 +73,7 @@ const workarounds: Workaround[] = [
 // LARGE_JSON_CONFIG_PART_1='{"featureA": {"enabled": true, "value": "..." },'
 // LARGE_JSON_CONFIG_PART_2='"featureB": {"enabled": false, "value": "..."}}'` },
       { type: "paragraph", text: "Note: In your application, you'd concatenate these string parts and then parse the JSON. This method can be cumbersome and is generally less ideal than using a secret manager for structured data." },
-      { type: "link", text: "Need help splitting? Use our Split Key Tool.", href: "/split-key" }
+      { type: "link", text: "Need help splitting? Use our SplitText Tool.", href: "/split-key" }
     ]
   },
   {
@@ -296,3 +296,5 @@ export default function EnvSizeCheckPage() {
     </main>
   );
 }
+
+    
